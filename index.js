@@ -2,10 +2,20 @@ require("dotenv").config();
 const http = require("http");
 const url = require("url");
 
+const command  = require('commander');
+
+command.option("--port <port>");
+command.parse(process.argv);
+
+let port;
+if (command.opts().port) {
+  port = command.opts().port;
+} else {
+  port = process.env.SERVER_PORT || 4000;
+}
 
 const server = http.createServer();
-
-const port = process.env.SERVER_PORT || 4000;
+ 
 server.listen(port);
 
 const calculator = require("./calculator");
@@ -44,3 +54,6 @@ server.on("request", (request, response) => {
   
   response.end();
 }); 
+
+
+
