@@ -10,7 +10,7 @@ server.listen(port);
 
 const calculator = require("./calculator");
 
-const html = (n1,n2) => {
+const html = (result) => {
   return `<!DOCTYPE html>
   <html lang="en">
     <head>
@@ -20,9 +20,8 @@ const html = (n1,n2) => {
       <title>Calculator Web Service </title>
     </head>
     <body>
-      <h1>This is a Calculator Web Service</h1>
-      <h2> Results </h2>
-        ${calculator(n1,n2)}
+      <h1>This is a Calculator Web Service</h1>     
+        ${result}
     </body>
   </html>
 `;
@@ -37,6 +36,11 @@ server.on("request", (request, response) => {
   const b = query.b;
 
   response.setHeader("Content-type", "text/html")
-  response.write(html(a,b));
+  if (a === undefined || b === undefined) {
+      response.write(html(`<h2> Warning </h2> <p> Missing a or b parameter. </p>`));
+  } else {
+      response.write(html(calculator(a,b)));    
+  }
+  
   response.end();
 }); 
