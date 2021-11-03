@@ -1,35 +1,42 @@
-const chalk = require("chalk");
-const prompt = require('prompt');
-const {Sumar, Restar, Multiplicar, Dividir} = require("./Operations.js");
-
-let myNumbers = process.argv.slice(2); 
-let n1 = process.argv.slice(2)[0];
-let n2 = process.argv.slice(2)[1];
-
-if (myNumbers.length === 0) {
-  prompt.start();
-  prompt.get(['n1', 'n2']).then( ({n1 , n2}) => {
-    console.log(chalk.cyan(
-      `Resultados:
-      Numeros: ${n1}, ${n2}
-      Sumar: ${Sumar(n1,n2)}
-      Restar: ${Restar(n1,n2)}
-      Multiplicar: ${Multiplicar(n1,n2)}
-      Dividir: ${Dividir(n1,n2)} 
-      `)
-    )}
-  )  
-} else if (myNumbers.length < 2) {
-  console.log(chalk.blue("Tienes que introducir 2 numeros"));
-} else {
-console.log(chalk.yellow(
-    `Resultados:
-    Sumar: ${Sumar(n1,n2)}
-    Restar: ${Restar(n1,n2)}
-    Multiplicar: ${Multiplicar(n1,n2)}
-    Dividir: ${Dividir(n1,n2)} 
-    `)
-  )
-};
+require("dotenv").config(); 
+const http = require("http");
+const url = require("url");
 
 
+const server = http.createServer();
+
+const port = process.env.SERVER_PORT || 4000;
+server.listen(port);
+
+const calculator = require("./calculator");
+
+const html = (n1,n2) => {
+  return `<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Calculator Web Service </title>
+    </head>
+    <body>
+      <h1>This is a Calculator Web Service</h1>
+      <h2> Results </h2>
+        ${calculator(n1,n2)}
+    </body>
+  </html>
+`;
+}
+
+server.on("request", (request, response) => {
+
+  var parts = url.parse(request.url, true);
+  var query = parts.query;
+  
+  const a = query.a;
+  const b = query.b;
+
+  response.setHeader("Content-type", "text/html")
+  response.write(html(a,b));
+  response.end();
+}); 
