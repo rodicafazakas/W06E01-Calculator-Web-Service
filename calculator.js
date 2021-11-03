@@ -37,6 +37,7 @@ const {Sumar, Restar, Multiplicar, Dividir} = require("./Operations.js");
 const calculator = (n1,n2) => {
   
   const resultHTML = `
+  <h2> Results </h2>
   <div>
    <p> ${n1} + ${n2} = ${Sumar(n1,n2)} </p>
    <p> ${n1} - ${n2} = ${Restar(n1,n2)} </p>
