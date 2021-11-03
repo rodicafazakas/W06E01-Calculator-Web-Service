@@ -2,6 +2,7 @@ require("dotenv").config();
 const http = require("http");
 const url = require("url");
 
+
 const command  = require('commander');
 
 command.option("--port <port>");
@@ -13,6 +14,7 @@ if (command.opts().port) {
 } else {
   port = process.env.SERVER_PORT || 4000;
 }
+
 
 const server = http.createServer();
  
@@ -38,16 +40,21 @@ const html = (result) => {
 }
 
 server.on("request", (request, response) => {
+  let parsedUrl = url.parse(request.url, true);
 
-  var parts = url.parse(request.url, true);
-  var query = parts.query;
-  
-  const a = query.a;
-  const b = query.b;
+  if (parsedUrl.pathname !== "/calculator") {
+     response.statusCode = 404;
+     response.end('404: Not Found');
+     return;
+  }
+
+  const {a,b} = parsedUrl.query;
 
   response.setHeader("Content-type", "text/html")
   if (a === undefined || b === undefined) {
       response.write(html(`<h2> Warning </h2> <p> Missing a or b parameter. </p>`));
+  } else if (isNaN(parseInt(a)) || isNaN(parseInt(b)) ) {
+      response.write(html(`<h2> Warning </h2> <p> Either a or b is not a number. </p>`));
   } else {
       response.write(html(calculator(a,b)));    
   }
