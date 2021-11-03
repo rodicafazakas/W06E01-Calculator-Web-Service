@@ -48,6 +48,8 @@ server.on("request", (request, response) => {
   response.setHeader("Content-type", "text/html")
   if (a === undefined || b === undefined) {
       response.write(html(`<h2> Warning </h2> <p> Missing a or b parameter. </p>`));
+  } else if (isNaN(parseInt(a)) || isNaN(parseInt(b)) ) {
+      response.write(html(`<h2> Warning </h2> <p> Either a or b is not a number. </p>`));
   } else {
       response.write(html(calculator(a,b)));    
   }
